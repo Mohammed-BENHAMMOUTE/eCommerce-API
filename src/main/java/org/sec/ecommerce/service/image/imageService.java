@@ -27,9 +27,7 @@ public class imageService implements IImageService {
 
     @Override
     public void deleteImageById(Long id) {
-        imageRepository.findById(id).ifPresentOrElse(image -> {
-            imageRepository.delete(image);
-        }, () -> {
+        imageRepository.findById(id).ifPresentOrElse(imageRepository::delete, () -> {
             throw new RessourceNotFoundException("Image not found");
         });
     }
@@ -65,7 +63,7 @@ public class imageService implements IImageService {
     // Helper method to convert Image to ImageDTO
     private ImageDTO convertToDto(Image image) {
         ImageDTO dto = new ImageDTO();
-        dto.setImageName(image.getFileName());
+        dto.setFileName(image.getFileName());
         dto.setImageId(image.getId());
         dto.setDownloadUrl(image.getDownloadUrl());
         return dto;

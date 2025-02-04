@@ -1,10 +1,15 @@
 package org.sec.ecommerce.service.product;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.sec.ecommerce.Exceptions.ProductNotFoundException;
 import org.sec.ecommerce.Repository.CategoryRepository;
+import org.sec.ecommerce.Repository.ImageRepository;
 import org.sec.ecommerce.Repository.ProductRepository;
+import org.sec.ecommerce.dto.ImageDTO;
+import org.sec.ecommerce.dto.ProductDto;
 import org.sec.ecommerce.model.Category;
+import org.sec.ecommerce.model.Image;
 import org.sec.ecommerce.model.Product;
 import org.sec.ecommerce.request.AddProductRequest;
 import org.sec.ecommerce.request.UpdateProductRequest;
@@ -16,8 +21,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService  implements IProductService{
-     private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final  ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product addProduct(AddProductRequest product) {
@@ -103,6 +110,7 @@ public class ProductService  implements IProductService{
     public List<Product> getProductByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand);
     }
+
     @Override
     public List<Product> getProductByName(String name) {
         return productRepository.findByName(name);
@@ -111,8 +119,28 @@ public class ProductService  implements IProductService{
     public List<Product> getProductByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name);
     }
+
     @Override
     public Long countProductByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) {
+        return products
+                .stream()
+                .map(this::converToDTO)
+                .toList();
+    }
+
+    @Override
+    public ProductDto converToDTO(Product product) {
+        ProductDto productDto =  modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProduct_Id((product.getId()));
+        List<ImageDTO> imageDTOS = images
+                .stream()
+                .map(image -> modelMapper.map(image, ImageDTO.class))
+                .toList();
+        productDto.setImages(imageDTOS);
+        return productDto;
     }
 }

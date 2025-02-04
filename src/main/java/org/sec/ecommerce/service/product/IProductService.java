@@ -1,5 +1,6 @@
 package org.sec.ecommerce.service.product;
 
+import org.sec.ecommerce.dto.ProductDto;
 import org.sec.ecommerce.model.Product;
 import org.sec.ecommerce.request.AddProductRequest;
 import org.sec.ecommerce.request.UpdateProductRequest;
@@ -21,4 +22,9 @@ public interface IProductService {
     List<Product> getProductByName(String name);
     List<Product> getProductByBrandAndName(String brand , String name);
     Long countProductByBrandAndName(String brand, String name);
+
+
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto converToDTO(Product product);
 }
