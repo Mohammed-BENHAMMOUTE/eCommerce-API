@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service @RequiredArgsConstructor
 public class imageService implements IImageService {
     private final ImageRepository imageRepository;
@@ -71,8 +70,7 @@ public class imageService implements IImageService {
         dto.setDownloadUrl(image.getDownloadUrl());
         return dto;
     }
-
-
+    
     @Override
     public Image updateImage(MultipartFile file, Long id) {
         Image image = getImageById(id);
@@ -86,5 +84,4 @@ public class imageService implements IImageService {
             throw new RessourceNotFoundException("Image not found");
         }
     }
-    
 }
